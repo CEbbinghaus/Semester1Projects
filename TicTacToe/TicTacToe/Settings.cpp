@@ -150,6 +150,7 @@ void IOption::configure() {
 	h.on(keyCode::bspc, [&]() {h.stop(); });
 	h.on(keyCode::enter, [&]() {
 		*value = (int)(min + (max - min) * (cursor * step));
+		h.stop();
 	});
 	h.on(h.update, [&]() {
 		cls();
@@ -157,7 +158,7 @@ void IOption::configure() {
 			cout << ' ';
 		}
 		for (int i = 0; i < width; i++) {
-			cout << (i == cursor ? 178 : '-');
+			cout << (char)((i == cursor) ? 178 : '-');
 		}
 	});
 	h.start();

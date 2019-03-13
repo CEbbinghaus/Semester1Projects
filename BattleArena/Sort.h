@@ -29,20 +29,27 @@ namespace BetterSort {
 		T* nextState = new T[size];
 		int count[10] = { 0 };
 		int i = 0;
-		for (i = 0; i < size; i++)
-			count[getDigit(functor(previousState[i]), digit)]++;
+		for (i = 0; i < size; i++) {
+			int value = functor(previousState[i]);
+			count[getDigit(value, digit)]++;
+		}
 
 		for (i = 1; i < 10; i++)
 			count[i] += count[i - 1];
 
 		for (i = size - 1; i >= 0; i--) {
-			int countIndex = getDigit(functor(previousState[i]), digit);
+			int fvalue = functor(previousState[i]);
+			int countIndex = getDigit(fvalue, digit);
 			int value = count[countIndex];
 			nextState[value - 1] = previousState[i];
 			count[countIndex]--;
 		}
-		memcpy(arr, nextState, size);
-		delete[] nextState;
+		for (i = 0; i < size; i++) {
+			delete &arr[i];
+		}
+
+		int* av = (int*)&arr;
+		av = (int*)&nextState;
 	}
 
 	template<class T>
