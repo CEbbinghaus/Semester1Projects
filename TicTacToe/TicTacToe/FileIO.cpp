@@ -18,9 +18,6 @@ bool FileIO::read(stringstream& buffer) {
 	return false;
 }
 bool FileIO::write(stringstream& data) {
-	system("cls");
-	std::cout << data.str();
-	//_sleep(20000);
 	ofstream fout(name, ios::out | ios::binary);
 	if (fout.good()) {
 		fout << data.rdbuf();
@@ -31,11 +28,11 @@ bool FileIO::write(stringstream& data) {
 		fout.close();
 	return false;
 }
-bool FileIO::setSize(int size) {
+bool FileIO::sign(const int pos, unsigned int date) {
 	ofstream fed(name, ios::in | ios::out | ios::binary);
 	if (fed.good()) {
-		fed.seekp(sizeof(char[16]), ios::beg);
-		fed.write((char*)&size, sizeof(size));
+		fed.seekp(pos, ios::beg);
+		fed.write((char*)&date, sizeof(int));
 		return true;
 	}
 	else

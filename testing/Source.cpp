@@ -5,6 +5,7 @@
 #include<fstream>
 #include <Windows.h>
 
+
 using namespace std;
 
 class WS {
@@ -16,7 +17,15 @@ public:
 };
 
 int main() {
-	cout << ("world" > "hello") << endl;
+	std::wstring windowName;
+	std::getline(std::wcin, windowName);
+
+	HWND windowHandle = FindWindowW(NULL, windowName.c_str());
+	DWORD* processID = new DWORD;
+	GetWindowThreadProcessId(windowHandle, processID);
+
+	std::wcout << L"Process ID of " << windowName.c_str() << L" is: " << *processID << std::endl;
+	//cout << system("start cmd /k wmic process get parentprocessid,name|find \"testing.exe\"");
 	//cout << "\033[1;31m[textgoeshere]\033[0m" << endl;
 	system("pause");
 	return 0;

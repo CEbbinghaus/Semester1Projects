@@ -8,6 +8,6 @@ class FileIO
 public:
 	bool write(std::stringstream& buffer);
 	bool read(std::stringstream& buffer);
-	bool setSize(int size);
+	bool sign(const int position, unsigned int date);
 };
 

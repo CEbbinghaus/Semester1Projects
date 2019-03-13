@@ -17,7 +17,8 @@ namespace BetterSort {
 	static int highest(T* arr, int size, function<int(T element)> functor) {
 		int max = 0;
 		for (int i = 0; i < size; i++) {
-			max = max < functor(arr[i]) ? functor(arr[i]) : max;
+			int value = functor(arr[i]);
+			max = ((max < value) ? value : max);
 		}
 		return  max;
 	}

@@ -23,6 +23,7 @@ namespace game {
 		void draw();
 
 		entity();
+		entity(const entity &e2);
 		entity(int level);
 		~entity();
 	};

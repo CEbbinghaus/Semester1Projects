@@ -35,46 +35,13 @@ class SOption : public Option {
 public:
 	char* value;
 	vector<string> possibilities;
-	SOption(string a_name, const char* a_value, vector<string> options) {
-		type = VType::Str;
-		name = a_name;
-		possibilities = options;
-		value = new char[32];
-		strcpy(value, a_value);
-	}
-	~SOption() {
-		delete value;
-		value = nullptr;
-	}
-	void* Value() {
-		return value;
-	}
-	void write(stringstream& buffer) {
-		buffer << value;
-		buffer << '\0';
-	}
-	void read(stringstream& buffer) {
-		buffer.clear();
-		buffer.get(value, 32, '\0');
-		buffer.seekg(1, ios::cur);
-		cout << value;
-	}
-	string draw() {
-		return name + ": " + value;
-	}
-	void configure() {
-		Menu m;
-		for (string s : possibilities) {
-			m.addField({ s, [=]() {strcpy(value, s.c_str());} });
-		}
-		
-		auto currentValue = find(possibilities.begin(), possibilities.end(), string(value));
-		if (currentValue != possibilities.end())
-			m.setCursor(distance(possibilities.begin(), currentValue));
-		m.draw();
-		Sleep(200);
-		m.start();
-	}
+	SOption(string a_name, const char* a_value, vector<string> options);
+	~SOption();
+	void* Value();
+	void write(stringstream& buffer);
+	void read(stringstream& buffer);
+	string draw();;
+	void configure();
 };
 
 class IOption : public Option {
@@ -82,57 +49,13 @@ public:
 	int* value;
 	int min;
 	int max;
-	IOption(string a_name, int a_value, int a_min, int a_max) {
-		type = VType::Int;
-		name = a_name;
-		value = new int(a_value);
-		min = a_min;
-		max = a_max;
-	}
-	~IOption() {
-		delete value;
-		value = nullptr;
-	}
-	void* Value() {
-		return value;
-	}
-	void write(stringstream& buffer) {
-		buffer.write((const char*)(value), sizeof(int));
-	}
-	void read(stringstream& buffer) {
-		buffer.clear();
-		char data[5];
-		buffer.get(data, 5);
-		memcpy(value, data, 4);
-	}
-	string draw() {
-		return name + ": " + to_string(*value);
-
-	}
-	void configure() {
-		int width = (int)(ConsoleWidth() / 0.75);
-		float step = 1 / width;
-		int cursor = floor(((*value - min) / (max - min)) * width);
-
-		KeyHandler h;
-		h.on(keyCode::left, [&]() {cursor--; });
-		h.on(keyCode::right, [&]() {cursor++;});
-		h.on(keyCode::esc, [&]() {h.stop(); });
-		h.on(keyCode::bspc, [&]() {h.stop(); });
-		h.on(keyCode::enter, [&]() {
-			*value = (int)(min + (max - min) * (cursor * step));
-		});
-		h.on(h.update, [&](){
-			cls();
-			for (int b = 0; b < (int)(width * 0.125); b++) {
-					cout << ' ';
-				}
-			for (int i = 0; i < width; i++) {
-				cout << (i == cursor ? 178 : '-');
-			}
-		});
-		h.start();
-	}
+	IOption(string a_name, int a_value, int a_min, int a_max);
+	~IOption();
+	void* Value();
+	void write(stringstream& buffer);
+	void read(stringstream& buffer);
+	string draw();
+	void configure();
 };
 
 class FOption : public Option {
@@ -140,68 +63,25 @@ public:
 	float* value;
 	float min;
 	float max;
-	FOption(string a_name, float a_value, float min, float max) {
-		type = VType::Flt;
-		name = a_name;
-		value = new float(a_value);
-	}
-	~FOption() {
-		delete value;
-		value = nullptr;
-	}
-	void* Value() {
-		return value;
-	}
-	string draw() {
-		return name + ": " + to_string(*value);
-	}
-	void write(stringstream& buffer) {
-		buffer.write((const char*)(value), sizeof(float));
-	}
-	void read(stringstream& buffer) {
-		buffer.clear();
-		char data[5];
-		buffer.get(data, 5);
-		memcpy(value, data, 4);
-	}
-	void configure() {}
+	FOption(string a_name, float a_value, float min, float max);
+	~FOption();
+	void* Value();
+	string draw();
+	void write(stringstream& buffer);
+	void read(stringstream& buffer);
+	void configure();
 };
 
 class BOption : public Option {
 public:
 	bool* value;
-	BOption(string a_name, float a_value) {
-		type = VType::Bll;
-		name = a_name;
-		value = new bool(a_value);
-	}
-	BOption(char* data[]) {
-
-	}
-	~BOption() {
-		delete value;
-		value = nullptr;
-	}
-	void* Value() {
-		return value;
-	}
-	string draw() {
-		return name + ": " + (*value ? "true" : "false");
-
-	}
-	void write(stringstream& buffer) {
-		buffer.write((const char*)(value), sizeof(boolean));
-		//buffer << *value;
-	}
-	void read(stringstream& buffer) {
-		buffer.clear();
-		char data[2];
-		buffer.get(data, 2);
-		memcpy(value, data, 1);
-	}
-	void configure(){
-		*value = !*value;
-	}
+	BOption(string a_name, float a_value);
+	~BOption();
+	void* Value();
+	string draw();
+	void write(stringstream& buffer);
+	void read(stringstream& buffer);
+	void configure();
 };
 
 class OptionData {
@@ -212,22 +92,18 @@ public:
 		new FOption("FloatTest", 7.5f, 0.0f, 100.0f),
 		new BOption("BooleanTest", true),
 		new IOption("FieldSize", 3, 2, 10),
+		new SOption("Speed", "medium", {"fast", "medium", "slow"}),
 		new SOption("Speed", "medium", {"fast", "medium", "slow"})
 	};
-	Option* get(string s) {
-      		for (Option* field : fields) {
-			if (field->name == s)return field;
-		}
-		return nullptr;
-	}
-	~OptionData() {
-		for (auto i : fields) {
-			delete i;
-		}
-	}
+
+
+	~OptionData();
+	Option* get(string s);
 };
 
 class Settings : public BaseStructure, public OptionData {
+	static const unsigned int copyrightSize = 48;
+	const char copyright[copyrightSize] = {"Copyright Christopher-Robin Ebbinghaus, 3132019"};
 	FileIO file;
 	Menu menu;
 public:
@@ -235,16 +111,7 @@ public:
 	void init();
 	void load();
 	void save();
-	void draw() {
-		Menu m;
-		//for (Option *o : fields) {
-		for(int i = 0; i < fields.size(); i++){
-			auto& o = fields[i];
-			m.addField({[&]() {return o->draw(); }, [&]() {o->configure(); } });
-		}
-		m.addField({ "Save Settings", [&]() {save();  cls(); cout << "Saved"; Sleep(2000); } });
-		m.start(false);
-	}
+	void draw();
 };
 /*
 

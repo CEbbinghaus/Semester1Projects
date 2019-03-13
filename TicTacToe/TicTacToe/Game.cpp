@@ -8,6 +8,7 @@ Game::Game(Settings* options) {
 	render = new GameRender(this);
 	settings = options; 
 	gridSize = (int*)settings->get("FieldSize")->Value();
+	int* name = (int*)settings->get("BooleanTest")->Value();
 	maxGridSize = (*gridSize * *gridSize) + (*gridSize + 1);
 	init();
 }

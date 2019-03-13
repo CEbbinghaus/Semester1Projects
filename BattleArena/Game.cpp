@@ -5,11 +5,15 @@
 Game::Game(){
 	menu = new Menu();
 	Enemies = new entity[EnemyCount];
-	BetterSort::sort<entity>(Enemies, EnemyCount, [](entity e) {return e.damage + e.strength;});
+
+
+	BetterSort::sort<entity>(Enemies, EnemyCount, [](entity e) {return round(e.health); });
+
+
 	for (int i = 0; i < EnemyCount; i++) {
 		entity e = Enemies[i];
 		e.draw();
-		_sleep(2000);
+		_sleep(200);
 	}
 }
 
@@ -24,3 +28,4 @@ Game::~Game()
 {
 	delete[] Enemies;
 }
+     

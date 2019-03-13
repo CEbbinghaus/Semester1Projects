@@ -8,8 +8,10 @@
 using namespace game;
 using namespace std;
 
-float rando() {
-	return (rand() % 10000) / 10000;
+double rando() {
+	float t = ((float)(rand() % 100)) / 100;
+	cout << rand() << endl << t << endl;
+	return t;
 }
 
 entity::entity()
@@ -23,7 +25,16 @@ entity::entity()
 	xp = 0;
 	level = round(rando() * 10);
 }
-
+entity::entity(const entity &e2) {
+	health = e2.health;
+	damage = e2.damage;
+	shield = e2.shield;
+	strength = e2.strength;
+	agility = e2.agility;
+	incentive = e2.incentive;
+	xp = e2.xp;
+	level = e2.level;
+}
 entity::entity(int a_level)
 {
 	float mod = 1 - pow(M_E, (double)(-0.02 * level));
@@ -67,14 +78,16 @@ string formatStat(int v) {
 	return r;
 }
 string formatStat(float v) {
-	float size = (to_string(round(v)).length() - 6) / 2;
+	int number = (int)round(v);
+	int length = to_string(number).length();
+	float size = (float)((float)(6 - length) / 2);
 	size = size < 0 ? 0 : size;
 	string r = "";
 	int i = 0;
 
 	for (i = 0; i < floor(size); i++)
 		r += " ";
-	r += to_string(round(v));
+	r += to_string((int)round(v));
 	for (i = 0; i < ceil(size); i++)
 		r += " ";
 	return r;
@@ -82,21 +95,14 @@ string formatStat(float v) {
 
 void entity::draw() {
 	system("cls");
-	cout << "╔══════════════════╦══════╗\n"
-		 << "║    CHARACTER     ║ STATS║\n"
-		 << "╠══════════════════╬══════╣\n";
-	cout << "║     Health       ║"<< formatStat(health) <<"║\n"
-		 << "╟──────────────────╫──────╢\n";
-	cout << "║     Shield       ║"<< formatStat(shield) <<"║\n"
-		 << "╟──────────────────╫──────╢\n";
-	cout << "║    Incentive     ║"<< formatStat(incentive) <<"║\n"
-		 << "╟──────────────────╫──────╢\n";
-	cout << "║     Agility      ║"<< formatStat(agility) <<"║\n"
-		 << "╟──────────────────╫──────╢\n";
-	cout << "║    Strength      ║"<< formatStat(strength) <<"║\n"
-		 << "╟──────────────────╫──────╢\n";
-	cout << "║     Damage       ║"<< formatStat(damage) <<"║\n"
-		 << "╚══════════════════╩══════╝";
+	cout << "| hth  | shd  | agl  | inc  | str  | dmg  |" << endl;
+	cout << "|"
+		 << formatStat(health) << "|"
+		 << formatStat(shield) << "|"
+		 << formatStat(agility) << "|"
+		 << formatStat(incentive) << "|"
+		 << formatStat(strength) << "|"
+		 << formatStat(damage) << "|";
 	/*
 
 	float health; //Min-0 || Max-200
